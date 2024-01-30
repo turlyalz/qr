@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include qrcode.min.js -->
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      #inputContainer {
+        margin-top: 20px;
+      }
+
+      input {
+        margin-bottom: 10px;
+      }
+
+      #generateBtn {
+        cursor: pointer;
+      }
+
+      #qrcode {
+        margin-top: 20px;
+      }
+
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body class="container">
+    <h2 class="mt-5">QR Code Generator</h2>
+
+    <div id="inputContainer">
+      <div class="mb-3">
+        <label for="whom" class="form-label">Whom:</label>
+        <select class="form-select" id="whom" oninput="generateQRCode()">
+          <option value="alzhan">Alzhan</option>
+          <option value="alzhan-revolut">Alzhan Revolut</option>
+          <option value="taras">Taras</option>
+          <option value="taras-revolut">Taras Revolut</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="user" class="form-label">User:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="user"
+          placeholder="Enter username"
+          oninput="generateQRCode()"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="amount" class="form-label">Amount:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="amount"
+          placeholder="Enter amount in CZK"
+          oninput="generateQRCode()"
+        />
+        <p id="errorText" class="error"></p>
+      </div>
+
+      <button
+        id="generateBtn"
+        class="btn btn-primary"
+        onclick="generateQRCode()"
+      >
+        Generate QR Code
+      </button>
+    </div>
+
+    <div id="qrcode"></div>
+
+    <script>
+      function validateInput(value) {
+        const isValidAmount = /^\d+(\.\d{1,2})?$/.test(value);
+
+        const errorText = document.getElementById("errorText");
+
+        if (!isValidAmount) {
+          errorText.textContent = "Please enter numbers only.";
+          return false;
+        } else {
+          errorText.textContent = "";
+          return true;
+        }
+      }
+
+      function generateQRCode() {
+        // Get input values
+        var user = document.getElementById("user").value || "";
+        var amount = document.getElementById("amount").value || 0; // Default: 0 CZK
+        var whom = document.getElementById("whom").value || "alzhan-revolut";
+
+        if (!validateInput(amount)) {
+          return;
+        }
+
+        switch (whom) {
+          case "alzhan":
+            var text =
+              "SPD*1.0*ACC:CZ5008000000004143214063*AM:" +
+              amount +
+              "*CC:CZK*RN:BC. ALZHAN TURLYBEKOV*PT:IP*MSG:" +
+              user;
+            break;
+          case "alzhan-revolut":
+            var text = "https://revolut.me/alzhan";
+            break;
+          case "taras":
+            var text =
+              "SPD*1.0*ACC:CZ3455000000007774237433*AM:" +
+              amount +
+              "*CC:CZK*X-URL:https://rb.cz*PT:IP*MSG:" +
+              user;
+            break;
+          case "taras-revolut":
+            var text = "https://revolut.me/taras7y2w";
+            break;
+          default:
+            var text =
+              "SPD*1.0*ACC:CZ5008000000004143214063*AM:" +
+              amount +
+              "*CC:CZK*RN:BC. ALZHAN TURLYBEKOV*PT:IP*MSG:" +
+              user;
+            break;
+        }
+
+        const existingQRCode = document.getElementById("qrcode");
+        if (existingQRCode) {
+          existingQRCode.parentNode.removeChild(existingQRCode);
+        }
+
+        // Create a new div element for the QR code
+        const newQRCodeDiv = document.createElement("div");
+        newQRCodeDiv.id = "qrcode";
+
+        // Append the new QR code div to the body
+        document.body.appendChild(newQRCodeDiv);
+
+        // Create QR Code
+        var qrcode = new QRCode(newQRCodeDiv, {
+          text: text,
+          width: 200,
+          height: 200,
+        });
+      }
+    </script>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
