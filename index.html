@@ -44,7 +44,7 @@
     <div id="inputContainer">
       <div class="mb-3">
         <label for="whom" class="form-label">Whom:</label>
-        <select class="form-select" id="whom" oninput="generateQRCode()">
+        <select class="form-select" id="whom" oninput="handleWhomChange()">
           <option value="alzhan">Alzhan</option>
           <option value="alzhan-revolut">Alzhan Revolut</option>
           <option value="taras">Taras</option>
@@ -63,7 +63,7 @@
         />
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3" id="amountContainer">
         <label for="amount" class="form-label">Amount:</label>
         <input
           type="text"
@@ -87,6 +87,25 @@
     <div id="qrcode"></div>
 
     <script>
+      function handleWhomChange() {
+        var whom = document.getElementById("whom").value;
+        var userContainer = document.getElementById("user").closest(".mb-3");
+        var amountContainer = document.getElementById("amountContainer");
+
+        if (whom === "alzhan-revolut" || whom === "taras-revolut") {
+          // Show Amount input field and label
+          userContainer.style.display = "none";
+          amountContainer.style.display = "none";
+        } else {
+          // Show both User and Amount input fields and labels for other options
+          userContainer.style.display = "block";
+          amountContainer.style.display = "block";
+        }
+
+        // Trigger QR code generation when Whom changes
+        generateQRCode();
+      }
+
       function validateInput(value) {
         const isValidAmount = /^\d+(\.\d{1,2})?$/.test(value);
 
